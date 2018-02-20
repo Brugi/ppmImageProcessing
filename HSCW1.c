@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 struct LinkedList{
     char* comment;
     struct LinkedList * next;
@@ -56,7 +55,7 @@ struct PPM * getPPM(FILE * fd){
             head->comment = com;
             head->next = NULL;
             currentNode = head;
-            //printf("%s", currentNode->comment);
+            printf("#%s\n", currentNode->comment);
 
         }else{
             while (currentNode->next != NULL){
@@ -65,11 +64,11 @@ struct PPM * getPPM(FILE * fd){
 
             currentNode->next = (struct LinkedList *)malloc(sizeof(struct LinkedList));
             currentNode = currentNode->next;
-            image->commentValue = head;
+            //image->commentValue = head;
             currentNode->comment = malloc(sizeof(com));
             strcpy(currentNode->comment, com);
             currentNode->next = NULL;
-            //printf("%s\n", currentNode->comment);
+            printf("# %s\n", currentNode->comment);
         }
 
         //add(head, com); // adding a comment at the end of the linked list. THIS produces the segmaentation fault.
@@ -93,7 +92,7 @@ struct PPM * getPPM(FILE * fd){
     image->matrix = malloc(3*(image->width*image->height)*sizeof(int));
     for(counter=0; counter<3*(image->width*image->height); counter++){
         fscanf(fd, "%d", &(image->matrix[counter]));
-        //printf("%d\n", image->matrix[counter]);
+        printf("%d\n", image->matrix[counter]);
 
     }
 
@@ -104,22 +103,24 @@ struct PPM * getPPM(FILE * fd){
 
 void showPPM(struct PPM * i){
 	printf("P3\n");
-    /*
-      struct LinkedList* currentNode = i->commentValue;
+    
+      struct LinkedList *currentNode = i->commentValue;
       int n;
       printf("%d\n", i->magicNb);
 
-      /*
+      
       while(currentNode != NULL){
-          printf("%s", currentNode->comment);
+          printf("# %s\n", currentNode->comment);
           currentNode = currentNode->next;
       }
-  */
+  /*
     printf("%d %d\n", i->width, i->height);
     printf("%d", i->max);
-    // for()
+    for(n=0;n<3*(i->width*i->height);i++){
+		printf("%d", i->matrix);
+	}
 	
-
+*/
 
 }
 
