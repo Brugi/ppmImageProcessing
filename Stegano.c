@@ -141,23 +141,20 @@ void showPPM(struct PPM * i){
 struct PPM * encode(char * text, struct PPM * i){
 
 
-    int count = 1;
-    int word = 0;
-    int len;
-    int Red;
-    int character;
-    int letter;
-    len = i->matrix[0].Red;
-    i->matrix[0].Red = strlen(text) + len/3;
-    
-	while(word < strlen(text)){
-        character = (int)text[word];
-        Red = (i->matrix[count].Red/3);
-        letter =  character + Red;
-        i->matrix[count].Red= letter;
 
-        count++;
+    srand(time(NULL));
+    int word = 0;
+    int count = 0;
+    int Green;
+    while(word < strlen(text)){
+        if( (int) text[word] == i->matrix[count].Red){
+            Green = i->matrix[count].Green;
+            i->matrix[count].Green = Green +1;
+        }else{
+            i->matrix[count].Red = (int) text[word];
+        }
         word++;
+        count += rand()%((i->width*i->height)/(strlen(text)-1));
 
     }
 
@@ -165,20 +162,25 @@ struct PPM * encode(char * text, struct PPM * i){
 }
 
 char * decode(struct PPM * i1, struct PPM * i2){
-    int strLength =(i2->matrix[0].Red) - (i1->matrix[0].Red/3);
-    int n = 1;
-    int i = 0;
-    char * secret;
-    secret = (char *) malloc(strLength*sizeof(char));
 
-    while(n <= strLength ){
+	char * secret;
+		secret = (char *) malloc((i1->height*i2->width)*sizeof(char));
+		int n = 0;
+		int i = 0;
+		while(n <= (i1->height*i1->width)){
 
-        secret[i] = (char)  ((i2->matrix[n].Red)- (i1->matrix[n].Red/3));
+			if(i1->matrix[n].Red == i2->matrix[n].Red && i1->matrix[n].Green == i2->matrix[n].Green){
+				n ++;
+			}else{
+				secret[i] = (char) (i2->matrix[n].Red);
+				i++;
+				n++;
+			}
 
-        n++;
-        i++;
-    }
-    secret[n-1] = '\0';
+
+		}
+	secret[n-1] = '\0';
+
 
     return secret;
 }
@@ -186,7 +188,6 @@ char * decode(struct PPM * i1, struct PPM * i2){
 
 int main(int argc,char ** argv){
     FILE * fin;
-    FILE * encrypt;
     FILE * enc;
     FILE * origin;
     struct PPM * toEncode;
@@ -194,9 +195,6 @@ int main(int argc,char ** argv){
     struct PPM * original;
     struct PPM * secret;
     char * msg;
-
-
-    //to make it work on CLion delete part after this
 	
 	if(argc != 4 && argc != 3){
 		printf("Not enough arguments\n");
@@ -204,11 +202,13 @@ int main(int argc,char ** argv){
 	}
 	
     if (strcmp(argv[1], "e") == 0){
-		//printf("Please enter a message: \n");
+
+		
+		fprintf(stderr, "Please enter a message:\n"); 
         fin = fopen(argv[2], "r");
-        encrypt = fopen(argv[3], "w");
         toEncode = getPPM(fin);
-		msg = (char *) malloc(100*sizeof(char));
+		msg = (char *) malloc(1000*sizeof(char));
+
 		fgets(msg,100,stdin);
         encoded = encode(msg, toEncode);
         showPPM(encoded);
