@@ -141,6 +141,7 @@ void showPPM(struct PPM * i){
 struct PPM * encode(char * text, struct PPM * i){
 
 
+
     srand(time(NULL));
     int word = 0;
     int count = 0;
@@ -154,12 +155,14 @@ struct PPM * encode(char * text, struct PPM * i){
         }
         word++;
         count += rand()%((i->width*i->height)/(strlen(text)-1));
+
     }
 
     return i;
 }
 
 char * decode(struct PPM * i1, struct PPM * i2){
+
 	char * secret;
 		secret = (char *) malloc((i1->height*i2->width)*sizeof(char));
 		int n = 0;
@@ -178,6 +181,7 @@ char * decode(struct PPM * i1, struct PPM * i2){
 		}
 	secret[n-1] = '\0';
 
+
     return secret;
 }
 
@@ -191,8 +195,6 @@ int main(int argc,char ** argv){
     struct PPM * original;
     struct PPM * secret;
     char * msg;
-
-
 	
 	if(argc != 4 && argc != 3){
 		printf("Not enough arguments\n");
@@ -200,11 +202,13 @@ int main(int argc,char ** argv){
 	}
 	
     if (strcmp(argv[1], "e") == 0){
+
 		
 		fprintf(stderr, "Please enter a message:\n"); 
         fin = fopen(argv[2], "r");
         toEncode = getPPM(fin);
 		msg = (char *) malloc(1000*sizeof(char));
+
 		fgets(msg,100,stdin);
         encoded = encode(msg, toEncode);
         showPPM(encoded);
